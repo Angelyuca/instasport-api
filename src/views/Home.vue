@@ -27,7 +27,6 @@ export default {
   }),
   created() {
     api.getClubs().then(response =>{
-      console.log(response);
       if(Array.isArray(response) && response.length>0){
         this.$store.dispatch('actionAddClubs', response);
       } else this.error_msg = response

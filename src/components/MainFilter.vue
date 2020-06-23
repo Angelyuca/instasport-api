@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="city">
-            <v-btn @click="clearCity" icon color="green">
+            <v-btn @click="clearCity" icon color="green" class="refresh-city">
                 <v-icon>mdi-cached</v-icon>
             </v-btn>
 
@@ -18,7 +18,7 @@
             </v-chip-group>
         </div>
         <div class="activity">
-            <v-btn @click="clearAct" icon color="green">
+            <v-btn @click="clearAct" icon color="green" class="refresh-activity">
                 <v-icon>mdi-cached</v-icon>
             </v-btn>
             <v-chip-group
@@ -83,23 +83,43 @@
                 return result;
             },
             activities() {
+                let city = this.$store.getters.getStoreCity;
                 let clubs = this.$store.getters.getStoreClubs;
-                let activities = [];
-                for (let club of clubs) {
-                    for (let obj_activity of club.activity) {
-                        activities.push(obj_activity)
+                if (city !== "") {
+                    let arr = clubs.filter(club => club.city.slug === city);
+                    let activities = [];
+                    for (let club of arr) {
+                        for (let obj_activity of club.activity) {
+                            activities.push(obj_activity)
+                        }
                     }
+                    let arr_title = [];
+                    let result = [];
+                    activities.forEach(activity => {
+                        if (!arr_title.includes(activity.title)) {
+                            arr_title.push(activity.title);
+                            result.push(activity);
+                        }
+                    });
+                    return result;
+
+                } else {
+                    let activities = [];
+                    for (let club of clubs) {
+                        for (let obj_activity of club.activity) {
+                            activities.push(obj_activity)
+                        }
+                    }
+                    let arr_title = [];
+                    let result = [];
+                    activities.forEach(activity => {
+                        if (!arr_title.includes(activity.title)) {
+                            arr_title.push(activity.title);
+                            result.push(activity);
+                        }
+                    });
+                    return result;
                 }
-                console.log(activities);
-                let arr_title = [];
-                let result = [];
-                activities.forEach(activity => {
-                    if (!arr_title.includes(activity.title)) {
-                        arr_title.push(activity.title);
-                        result.push(activity);
-                    }
-                });
-                return result;
             }
         }
     }
@@ -125,5 +145,13 @@
         justify-content: center;
     }
 
+    .refresh-city, .refresh-activity {
+        position: absolute;
+        left: 0;
+    }
+
+    .city, .activity {
+        padding: 5px 30px;
+    }
 
 </style>
